@@ -1,6 +1,6 @@
 
-const getNewPrice = (price) => Math.round(+price.slice(0, -2).replace(/\s/g, ""))*1.05;
-const getelementsWithCurrency = () => Array.from(document.querySelectorAll("span, strong")).filter(elem =>
+const getNewPrice = (price) => Math.ceil(Math.round(+price.slice(0, -2).replace(/\s/g, "")*100)*1.05)/100;
+const getelementsWithCurrency = () => Array.from(document.querySelectorAll("span, strong, p")).filter(elem =>
     elem.textContent.includes("₼") || elem.textContent.includes("AZN")
 );
 
