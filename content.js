@@ -3,6 +3,7 @@ const getNewPrice = (price) => Math.round(+price.slice(0, -2).replace(/\s/g, "")
 const getelementsWithCurrency = () => Array.from(document.querySelectorAll("span, strong")).filter(elem =>
     elem.textContent.includes("₼") || elem.textContent.includes("AZN")
 );
+
 const styles = {
     container: `
         display: flex;
@@ -61,7 +62,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         document.querySelectorAll('.green-extension-container').forEach(container => {
             container.remove();
         });
-
         sendResponse({ message: 'Website reset to the original state.' });
     }
 });
