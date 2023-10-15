@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "Green Extension",
+    "version": "1.0.1",
+    "description": "Lets you donate to the environment while you shop!",
+    "permissions": [
+      "activeTab"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "icons": {
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
