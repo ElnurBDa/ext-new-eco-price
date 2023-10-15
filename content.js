@@ -1,49 +1,67 @@
+
+const getNewPrice = (price) => Math.round(+price.slice(0, -2).replace(/\s/g, "")) + 5;
+const getelementsWithCurrency = () => Array.from(document.querySelectorAll("span, strong")).filter(elem =>
+    elem.textContent.includes("₼") || elem.textContent.includes("AZN")
+);
+const styles = {
+    container: `
+        display: flex;
+        align-items: center;
+        background-color: #4CAF50;
+        padding: 10px;
+        width: fit-content;`,
+    checkbox: `
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-radius: 5px;
+        cursor: pointer;`,
+    price:`
+        color: #fff;
+        margin: 0;
+        font-size: 16px;`
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log('Message received from background script.');
+    
     if (request.action === 'add') {
+        const elementsWithCurrency = getelementsWithCurrency();
+        let elementCounter = 0;
 
-        const offerPriceElement = document.querySelector('.MPProductMainDesc-OfferPrice');
-        if (offerPriceElement) {
-            const container = document.createElement('div');
-            container.className = 'green-extension-container';
-            container.style.display = 'flex';
-            container.style.alignItems = 'center';
-            container.style.backgroundColor = '#4CAF50';
-            container.style.padding = '10px';
-            container.style.width = 'fit-content';
+        elementsWithCurrency.forEach(elem => {
+            const newPrice = elem.textContent;
+            const value = getNewPrice(newPrice);
+            elementCounter = (elementCounter + 1) % 2;
 
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = 'green-checkbox';
-            checkbox.style.width = '20px'; 
-            checkbox.style.height = '20px'; 
-            checkbox.style.border = '2px solid #fff'; 
-            checkbox.style.borderRadius = '5px'; 
-            checkbox.style.cursor = 'pointer';
+            if (elem && value && elementCounter) {
+                const container = document.createElement('div');
+                container.className = 'green-extension-container';
+                container.style.cssText = styles.container;
 
-            const newPriceElement = document.querySelector('[data-info="item-desc-price-new"]');
-            if (newPriceElement) {
-                const newPrice = newPriceElement.textContent;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'green-checkbox';
+                checkbox.style.cssText = styles.checkbox;
 
                 const price = document.createElement('h4');
                 price.id = 'green-price';
-                price.textContent = `${Math.round(+newPrice.slice(0, -2).replace(/\s/g, ""))+5} ₼, pay and plant a tree!`;
-                price.style.color = "#fff";
-                price.style.margin = '0';
-                price.style.fontSize = '16px';
+                price.textContent = `${value} ₼, pay and plant a tree!`;
+                price.style.cssText = styles.price;
 
                 container.appendChild(checkbox);
                 container.appendChild(price);
 
-                offerPriceElement.parentNode.insertBefore(container, offerPriceElement.nextSibling);
+                elem.parentNode.insertBefore(container, elem.nextSibling);
             }
-        }
+        });
+
         sendResponse({ message: 'Checkbox and price added with a new value.' });
     } else if (request.action === 'reset') {
-        const container = document.querySelector('.green-extension-container');
-        if (container) {
+        document.querySelectorAll('.green-extension-container').forEach(container => {
             container.remove();
-        }
+        });
+
         sendResponse({ message: 'Website reset to the original state.' });
     }
 });
