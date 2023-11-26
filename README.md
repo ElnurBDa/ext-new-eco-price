@@ -9,3 +9,6 @@ Adds new price to existing on some marketplace platform.
 
 # Why
 Additional price will be donated for planting a tree
+
+# Note
+IT was created at Hackathon.
